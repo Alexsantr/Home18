@@ -13,16 +13,17 @@ import pages.AccountPage;
 public class DemoBooksTest extends TestBase {
     BooksApi booksApi = new BooksApi();
     AccountPage accountPage = new AccountPage();
+    LoginResponseModel loginResponse = new AuthorizationAPI().log();
+    BookListModelResponse bookListModelResponse = booksApi.getBookData1(loginResponse);
+    AddBookBodyModel addBookBodyModel = booksApi.getBookData(loginResponse);
 
     @Test
     @Tag("demode")
     @WithLogin
     void successDeleteBookFromProfileTest() {
 
-         LoginResponseModel loginResponse = new AuthorizationAPI().log();
-        AddBookBodyModel addBookBodyModel = booksApi.getBookData(loginResponse);
+
         booksApi.addBook(addBookBodyModel, loginResponse.getToken());
-        BookListModelResponse bookListModelResponse = booksApi.getBookData1(loginResponse);
         accountPage.openPage()
                 .checkHaveBooks(bookListModelResponse.getTitle());
         booksApi.deleteAllBooks(loginResponse);

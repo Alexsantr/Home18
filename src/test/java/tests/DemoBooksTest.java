@@ -15,7 +15,7 @@ public class DemoBooksTest extends TestBase {
     AccountPage accountPage = new AccountPage();
 
     @Test
-    @Tag("demo")
+    @Tag("demode")
     @WithLogin
     void successDeleteBookFromProfileTest() {
 

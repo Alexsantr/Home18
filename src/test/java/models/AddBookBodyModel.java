@@ -13,5 +13,4 @@ public class AddBookBodyModel {
     List<IsbnBookModel> collectionOfIsbns;
 
 
-
 }

@@ -4,12 +4,15 @@ import api.AuthorizationAPI;
 import api.BooksApi;
 import helpers.WithLogin;
 import models.AddBookBodyModel;
+import models.BookListModelResponse;
 import models.LoginResponseModel;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import pages.AccountPage;
 
 public class DemoBooksTest extends TestBase {
     BooksApi booksApi = new BooksApi();
+    AccountPage accountPage = new AccountPage();
 
     @Test
     @Tag("demo")
@@ -17,10 +20,14 @@ public class DemoBooksTest extends TestBase {
     void successDeleteBookFromProfileTest() {
 
         LoginResponseModel loginResponse = new AuthorizationAPI().log();
+        BookListModelResponse bookListModelResponse = booksApi.getBookData1(loginResponse);
         AddBookBodyModel addBookBodyModel = booksApi.getBookData(loginResponse);
         booksApi.addBook(addBookBodyModel, loginResponse.getToken());
+        accountPage.openPage()
+                .checkHaveBooks(bookListModelResponse.getTitle());
         booksApi.deleteAllBooks(loginResponse);
-//        booksApi.checkBookInAccount(loginResponse.getUserId(),loginResponse.getToken());
+        accountPage.openPage()
+                .checkNotBooks(bookListModelResponse.getTitle());
 
 
     }

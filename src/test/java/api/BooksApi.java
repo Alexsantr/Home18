@@ -1,13 +1,12 @@
 package api;
+
 import io.qameta.allure.Step;
 import lombok.extern.slf4j.Slf4j;
 import models.*;
 
 
-
 import java.util.Collections;
 
-import static data.UrlPath.ACCOUNT_PATH;
 import static data.UrlPath.BOOKS_PATH;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
@@ -30,7 +29,7 @@ public class BooksApi {
 
     @Step("Получение данных о книгах и сохранение isbn и title")
     public AddBookBodyModel getBookData(LoginResponseModel loginResponse) {
-        BookCollectionResponse response =  given(requestSpec)
+        BookCollectionResponse response = given(requestSpec)
                 .header("Authorization", "Bearer " + loginResponse.getToken())
                 .queryParam("UserId", loginResponse.getUserId())
                 .when()
@@ -42,18 +41,19 @@ public class BooksApi {
         AddBookBodyModel addBookBodyModel = new AddBookBodyModel();
         addBookBodyModel.setUserId(loginResponse.getUserId());
         IsbnBookModel isbnBookModel = new IsbnBookModel();
+
         isbnBookModel.setIsbn(response.getBooks()[0].getIsbn());
         addBookBodyModel.setCollectionOfIsbns(Collections.singletonList(isbnBookModel));
 
-        log.info("Данные книги: " + addBookBodyModel+isbnBookModel);
-
+        BookListModelResponse bookListModelResponse = new BookListModelResponse();
+        bookListModelResponse.setTitle(response.getBooks()[0].getTitle());
 
         return addBookBodyModel;
     }
 
 
     @Step("Добавление новой книги через API с использованием сохраненных данных")
-    public void addBook( AddBookBodyModel addBookBodyModel, String token )   {
+    public void addBook(AddBookBodyModel addBookBodyModel, String token) {
         given(requestSpec)
                 .contentType(JSON)
                 .header("Authorization", "Bearer " + token)
@@ -67,22 +67,22 @@ public class BooksApi {
     }
 
 
-
-    @Step("Проверка")
-    public void checkBookInAccount( String UserId, String token )   {
-
-        given(requestSpec)
-                .contentType(JSON)
-                .queryParam("UserId", UserId)
-                .header("Authorization", "Bearer " + token)
+    @Step("Получение данных о книгах и сохранение isbn и title")
+    public BookListModelResponse getBookData1(LoginResponseModel loginResponse) {
+        BookCollectionResponse response = given(requestSpec)
+                .header("Authorization", "Bearer " + loginResponse.getToken())
+                .queryParam("UserId", loginResponse.getUserId())
                 .when()
-                .get(ACCOUNT_PATH)
+                .get(BOOKS_PATH)
                 .then()
-                .spec(responseSpecWithStatusCode201);
+                .spec(responseSpecWithStatusCode200)
+                .extract().as(BookCollectionResponse.class);
+
+        BookListModelResponse bookListModelResponse = new BookListModelResponse();
+        bookListModelResponse.setTitle(response.getBooks()[0].getTitle());
+
+        return bookListModelResponse;
 
     }
-
-
-
 }
 

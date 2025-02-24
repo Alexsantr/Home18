@@ -67,7 +67,7 @@ public class BooksApi {
     }
 
 
-    @Step("Получение данных о книгах и сохранение isbn и title")
+    @Step("Получение данных о книгах")
     public BookListModelResponse getBookData1(LoginResponseModel loginResponse) {
         BookCollectionResponse response = given(requestSpec)
                 .header("Authorization", "Bearer " + loginResponse.getToken())

@@ -19,10 +19,10 @@ public class DemoBooksTest extends TestBase {
     @WithLogin
     void successDeleteBookFromProfileTest() {
 
-        LoginResponseModel loginResponse = new AuthorizationAPI().log();
-        BookListModelResponse bookListModelResponse = booksApi.getBookData1(loginResponse);
+         LoginResponseModel loginResponse = new AuthorizationAPI().log();
         AddBookBodyModel addBookBodyModel = booksApi.getBookData(loginResponse);
         booksApi.addBook(addBookBodyModel, loginResponse.getToken());
+        BookListModelResponse bookListModelResponse = booksApi.getBookData1(loginResponse);
         accountPage.openPage()
                 .checkHaveBooks(bookListModelResponse.getTitle());
         booksApi.deleteAllBooks(loginResponse);
